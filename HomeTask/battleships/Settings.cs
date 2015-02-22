@@ -18,17 +18,14 @@ namespace battleships
 		public bool Verbose;
 		public int Width;
 
-		public Settings()
-		{
-		}
-
 		public Settings(string settingsFilename)
 		{
 			var lines = File.ReadAllLines(settingsFilename)
 				.Where(line => !string.IsNullOrWhiteSpace(line))
 				.Select(line => line.Split(new[] {' ', '\t'}, StringSplitOptions.RemoveEmptyEntries))
 				.ToList();
-			Interactive = GetBool(lines, "interactive");
+			
+            Interactive = GetBool(lines, "interactive");
 			Verbose = GetBool(lines, "verbose");
 			GamesCount = GetInt(lines, "gamesCount", 1);
 			Width = GetInt(lines, "width", 20);

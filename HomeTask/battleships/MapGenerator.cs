@@ -3,14 +3,14 @@ using System.Linq;
 
 namespace battleships
 {
-    public class MapGenerator
+    public class MapGenerator : IMapGenerator
     {
         private readonly int height;
         private readonly Random random;
         private readonly int[] shipSizes;
         private readonly int width;
 
-        public MapGenerator(int width, int height, int[] shipSizes, Random random)
+        public MapGenerator(int width, int height, int[] shipSizes, Random random) 
         {
             this.width = width;
             this.height = height;

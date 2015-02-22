@@ -17,8 +17,8 @@ namespace battleships
 
 		public ProcessMonitor(TimeSpan timeLimit, long memoryLimit)
 		{
-			this.timeLimit = timeLimit;
-			this.memoryLimit = memoryLimit;
+            this.timeLimit = timeLimit;
+            this.memoryLimit = memoryLimit;
 			CreateMonitoringThread().Start();
 		}
 

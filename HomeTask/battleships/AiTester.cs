@@ -7,37 +7,42 @@ namespace battleships
 {
     public class AiTester
     {
-        private static readonly Logger resultsLog = LogManager.GetLogger("results");
+        private readonly Logger resultsLogger;
         private readonly Settings settings;
+        private readonly IGameVisualizer gameVisualizer;
+        private readonly IMapGenerator mapGenerator;
+        private readonly ProcessMonitor processMonitor;
 
-        public AiTester(Settings settings)
+        public AiTester(Settings settings, IGameVisualizer gameVisualizer, IMapGenerator mapGenerator, ProcessMonitor processMonitor, 
+            Logger resultsLogger)
         {
             this.settings = settings;
+            this.gameVisualizer = gameVisualizer;
+            this.mapGenerator = mapGenerator;
+            this.processMonitor = processMonitor;
+            this.resultsLogger = resultsLogger;
         }
 
         public void TestSingleFile(string exe)
         {
-            var gen = new MapGenerator(settings.Width, settings.Height, settings.Ships, new Random(settings.RandomSeed));
-            var vis = new GameVisualizer();
-            var monitor = new ProcessMonitor(TimeSpan.FromSeconds(settings.TimeLimitSeconds * settings.GamesCount),
-                settings.MemoryLimit);
             var badShots = 0;
             var crashes = 0;
             var gamesPlayed = 0;
             var shots = new List<int>();
-            var ai = new Ai(exe, monitor);
+            var ai = new Ai(exe, processMonitor);
+
             for (var gameIndex = 0; gameIndex < settings.GamesCount; gameIndex++)
             {
-                var map = gen.GenerateMap();
+                var map = mapGenerator.GenerateMap();
                 var game = new Game(map, ai);
-                RunGameToEnd(game, vis);
+                RunGameToEnd(game);
                 gamesPlayed++;
                 badShots += game.BadShots;
                 if (game.AiCrashed)
                 {
                     crashes++;
                     if (crashes > settings.CrashLimit) break;
-                    ai = new Ai(exe, monitor);
+                    ai = new Ai(exe, processMonitor);
                 }
                 else
                     shots.Add(game.TurnsCount);
@@ -52,14 +57,14 @@ namespace battleships
             WriteTotal(ai, shots, crashes, badShots, gamesPlayed);
         }
 
-        private void RunGameToEnd(Game game, GameVisualizer vis)
+        private void RunGameToEnd(Game game)
         {
             while (!game.IsOver())
             {
                 game.MakeStep();
                 if (settings.Interactive)
                 {
-                    vis.Visualize(game);
+                    gameVisualizer.Visualize(game);
                     if (game.AiCrashed)
                         Console.WriteLine(game.LastError.Message);
                     Console.ReadKey();
@@ -80,7 +85,7 @@ namespace battleships
             var score = efficiencyScore - crashPenalty - badFraction;
             var headers = FormatTableRow(new object[] { "AiName", "Mean", "Sigma", "Median", "Crashes", "Bad%", "Games", "Score" });
             var message = FormatTableRow(new object[] { ai.Name, mean, sigma, median, crashes, badFraction, gamesPlayed, score });
-            resultsLog.Info(message);
+            resultsLogger.Info(message);
             Console.WriteLine();
             Console.WriteLine("Score statistics");
             Console.WriteLine("================");

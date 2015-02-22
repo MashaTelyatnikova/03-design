@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ninject">
+      <HintPath>..\packages\Ninject.3.2.3-unstable-012\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\external_packages\NLog.dll</HintPath>
     </Reference>
@@ -51,10 +54,14 @@
     <Compile Include="Ai.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameVisualizer.cs" />
+    <Compile Include="IGameVisualizer.cs" />
+    <Compile Include="IMapGenerator.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="MapCell.cs" />
     <Compile Include="MapGenerator.cs" />
+    <Compile Include="MapGenerator_should.cs" />
     <Compile Include="Map_should.cs" />
+    <Compile Include="AiTesterModule.cs" />
     <Compile Include="ProcessMonitor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -64,9 +71,11 @@
     <Compile Include="ShipDirection.cs" />
     <Compile Include="Ship_should.cs" />
     <Compile Include="ShotEffect.cs" />
+    <Compile Include="ShotInfo.cs" />
     <Compile Include="Vector.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="README.md" />
     <None Include="settings.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
