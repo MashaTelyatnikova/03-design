@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using battleships.Interfaces;
 using Ninject.Modules;
 using NLog;
 
@@ -27,6 +29,10 @@ namespace battleships
                     .WithConstructorArgument("memoryLimit", (long)settings.MemoryLimit);
 
             Bind<Logger>().ToConstant(LogManager.GetLogger("results"));
+            Bind<IAiFactory>().To<AiFactory>();
+            Bind<IGameFactory>().To<GameFactory>();
+            Bind<TextWriter>().ToConstant(Console.Out);
+            Bind<TextReader>().ToConstant(Console.In);
         }
     }
 }

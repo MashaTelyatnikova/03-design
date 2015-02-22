@@ -1,15 +1,17 @@
 using System;
 using System.Linq;
+using battleships.Enums;
+using battleships.Interfaces;
 using NLog;
 
 namespace battleships
 {
-    public class Game
+    public class Game : IGame
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
-        private readonly Ai ai;
+        private readonly IAi ai;
 
-        public Game(Map map, Ai ai)
+        public Game(Map map, IAi ai)
         {
             Map = map;
             this.ai = ai;

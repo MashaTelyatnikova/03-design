@@ -18,6 +18,11 @@ namespace battleships
 		public bool Verbose;
 		public int Width;
 
+	    public Settings()
+	    {
+	        
+	    }
+
 		public Settings(string settingsFilename)
 		{
 			var lines = File.ReadAllLines(settingsFilename)

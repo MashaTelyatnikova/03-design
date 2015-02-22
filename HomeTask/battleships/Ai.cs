@@ -2,11 +2,13 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using battleships.Enums;
+using battleships.Interfaces;
 using NLog;
 
 namespace battleships
 {
-    public class Ai
+    public class Ai:IAi
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
         private Process process;

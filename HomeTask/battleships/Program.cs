@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Threading;
+using battleships.Interfaces;
 using Ninject;
 using NLog;
 
@@ -23,7 +24,7 @@ namespace battleships
 			var aiPath = args[0];
 
             var tester = new AiTester(ninjectKernel.Get<Settings>(), ninjectKernel.Get<IGameVisualizer>(), ninjectKernel.Get<IMapGenerator>(),
-                ninjectKernel.Get<ProcessMonitor>(), ninjectKernel.Get<Logger>());
+                ninjectKernel.Get<ProcessMonitor>(), ninjectKernel.Get<Logger>(), ninjectKernel.Get<IAiFactory>(), ninjectKernel.Get<IGameFactory>(), ninjectKernel.Get<TextWriter>(), ninjectKernel.Get<TextReader>());
 
             if (File.Exists(aiPath))
                 tester.TestSingleFile(aiPath);

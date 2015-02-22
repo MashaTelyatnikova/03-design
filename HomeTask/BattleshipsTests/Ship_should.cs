@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using battleships;
+using battleships.Enums;
 using NUnit.Framework;
 
-namespace battleships
+namespace BattleshipsTests
 {
     [TestFixture]
     public class Ship_should

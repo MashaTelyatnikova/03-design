@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using battleships.Enums;
+using battleships.Interfaces;
 
 namespace battleships
 {

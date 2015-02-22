@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using battleships.Interfaces;
 using NLog;
 
 namespace battleships
@@ -12,15 +14,23 @@ namespace battleships
         private readonly IGameVisualizer gameVisualizer;
         private readonly IMapGenerator mapGenerator;
         private readonly ProcessMonitor processMonitor;
+        private readonly IAiFactory aiFactory;
+        private readonly IGameFactory gameFactory;
+        private readonly TextWriter textWriter;
+        private readonly TextReader textReader;
 
         public AiTester(Settings settings, IGameVisualizer gameVisualizer, IMapGenerator mapGenerator, ProcessMonitor processMonitor, 
-            Logger resultsLogger)
+            Logger resultsLogger, IAiFactory aiFactory, IGameFactory gameFactory, TextWriter textWriter, TextReader textReader)
         {
             this.settings = settings;
+            this.aiFactory = aiFactory;
             this.gameVisualizer = gameVisualizer;
             this.mapGenerator = mapGenerator;
             this.processMonitor = processMonitor;
             this.resultsLogger = resultsLogger;
+            this.gameFactory = gameFactory;
+            this.textReader = textReader;
+            this.textWriter = textWriter;
         }
 
         public void TestSingleFile(string exe)
@@ -29,12 +39,12 @@ namespace battleships
             var crashes = 0;
             var gamesPlayed = 0;
             var shots = new List<int>();
-            var ai = new Ai(exe, processMonitor);
+            var ai = aiFactory.CreateAi(exe, processMonitor);
 
             for (var gameIndex = 0; gameIndex < settings.GamesCount; gameIndex++)
             {
                 var map = mapGenerator.GenerateMap();
-                var game = new Game(map, ai);
+                var game = gameFactory.CreateGame(map, ai);
                 RunGameToEnd(game);
                 gamesPlayed++;
                 badShots += game.BadShots;
@@ -42,13 +52,13 @@ namespace battleships
                 {
                     crashes++;
                     if (crashes > settings.CrashLimit) break;
-                    ai = new Ai(exe, processMonitor);
+                    ai = aiFactory.CreateAi(exe, processMonitor);
                 }
                 else
                     shots.Add(game.TurnsCount);
                 if (settings.Verbose)
                 {
-                    Console.WriteLine(
+                    textWriter.WriteLine(
                         "Game #{3,4}: Turns {0,4}, BadShots {1}{2}",
                         game.TurnsCount, game.BadShots, game.AiCrashed ? ", Crashed" : "", gameIndex);
                 }
@@ -57,7 +67,7 @@ namespace battleships
             WriteTotal(ai, shots, crashes, badShots, gamesPlayed);
         }
 
-        private void RunGameToEnd(Game game)
+        private void RunGameToEnd(IGame game)
         {
             while (!game.IsOver())
             {
@@ -66,13 +76,13 @@ namespace battleships
                 {
                     gameVisualizer.Visualize(game);
                     if (game.AiCrashed)
-                        Console.WriteLine(game.LastError.Message);
-                    Console.ReadKey();
+                        textWriter.WriteLine(game.LastError.Message);
+                    textReader.ReadLine();
                 }
             }
         }
 
-        private void WriteTotal(Ai ai, List<int> shots, int crashes, int badShots, int gamesPlayed)
+        private void WriteTotal(IAi ai, List<int> shots, int crashes, int badShots, int gamesPlayed)
         {
             if (shots.Count == 0) shots.Add(1000 * 1000);
             shots.Sort();
@@ -86,11 +96,11 @@ namespace battleships
             var headers = FormatTableRow(new object[] { "AiName", "Mean", "Sigma", "Median", "Crashes", "Bad%", "Games", "Score" });
             var message = FormatTableRow(new object[] { ai.Name, mean, sigma, median, crashes, badFraction, gamesPlayed, score });
             resultsLogger.Info(message);
-            Console.WriteLine();
-            Console.WriteLine("Score statistics");
-            Console.WriteLine("================");
-            Console.WriteLine(headers);
-            Console.WriteLine(message);
+            textWriter.WriteLine();
+            textWriter.WriteLine("Score statistics");
+            textWriter.WriteLine("================");
+            textWriter.WriteLine(headers);
+            textWriter.WriteLine(message);
         }
 
         private string FormatTableRow(object[] values)
