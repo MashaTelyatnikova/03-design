@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using battleships.Enums;
 using NLog;
 
 namespace battleships

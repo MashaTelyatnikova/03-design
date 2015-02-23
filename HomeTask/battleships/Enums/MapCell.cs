@@ -1,4 +1,4 @@
-﻿namespace battleships
+﻿namespace battleships.Enums
 {
     public enum MapCell
     {
