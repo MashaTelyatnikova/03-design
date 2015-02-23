@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MapGenerator_should.cs" />
     <Compile Include="Map_should.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ship_should.cs" />
