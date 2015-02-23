@@ -23,9 +23,7 @@ namespace battleships
 		    var ninjectKernel = new StandardKernel(new AiTesterModule());
 			var aiPath = args[0];
 
-            var tester = new AiTester(ninjectKernel.Get<Settings>(), ninjectKernel.Get<IGameVisualizer>(), ninjectKernel.Get<IMapGenerator>(),
-                ninjectKernel.Get<ProcessMonitor>(), ninjectKernel.Get<Logger>(), ninjectKernel.Get<IAiFactory>(), ninjectKernel.Get<IGameFactory>(), ninjectKernel.Get<TextWriter>(), ninjectKernel.Get<TextReader>());
-
+		    var tester = ninjectKernel.Get<AiTester>();
             if (File.Exists(aiPath))
                 tester.TestSingleFile(aiPath);
             else
