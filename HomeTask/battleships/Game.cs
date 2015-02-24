@@ -7,7 +7,7 @@ namespace battleships
 {
     public class Game
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly Ai ai;
 
         public Game(Map map, Ai ai)
@@ -54,8 +54,8 @@ namespace battleships
             catch (Exception e)
             {
                 AiCrashed = true;
-                log.Info("Ai {0} crashed", ai.Name);
-                log.Error(e);
+                Log.Info("Ai {0} crashed", ai.Name);
+                Log.Error(e);
                 LastError = e;
                 return false;
             }

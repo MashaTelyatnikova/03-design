@@ -4,9 +4,9 @@ using battleships.Enums;
 
 namespace battleships
 {
-	public class GameVisualizer
+	public static class GameVisualizer
 	{
-		public void Visualize(Game game)
+		public static void Visualize(Game game)
 		{
 			Console.Clear();
 			Console.WriteLine(MapToString(game));
@@ -16,9 +16,12 @@ namespace battleships
 				Console.WriteLine("Bad shots: " + game.BadShots);
 			if (game.IsOver())
 				Console.WriteLine("Game is over");
+
+            if (game.AiCrashed)
+                Console.WriteLine(game.LastError.Message);
 		}
 
-		private string MapToString(Game game)
+		private static string MapToString(Game game)
 		{
 			var map = game.Map;
 			var sb = new StringBuilder();
@@ -31,7 +34,7 @@ namespace battleships
 			return sb.ToString();
 		}
 
-		private string GetSymbol(MapCell cell)
+		private static string GetSymbol(MapCell cell)
 		{
 			switch (cell)
 			{

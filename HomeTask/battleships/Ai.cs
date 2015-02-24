@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -7,13 +8,13 @@ using NLog;
 
 namespace battleships
 {
-    public class Ai
+    public class Ai : IDisposable
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Process process;
         private readonly string exePath;
-        public event Action<Process> RunningProcess; 
-       
+        public event Action<Process> RunningProcess;
+
         public Ai(string exePath)
         {
             this.exePath = exePath;

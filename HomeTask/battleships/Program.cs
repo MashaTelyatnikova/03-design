@@ -23,10 +23,13 @@ namespace battleships
             var tester = new AiTester(settings);
 
             var logger = LogManager.GetLogger("results");
-            tester.TestingCompleted += logger.Info;
 
             if (File.Exists(aiPath))
-                tester.TestSingleFile(aiPath);
+            {
+                var statistic = tester.TestSingleFile(aiPath);
+                logger.Info(statistic.Message);
+                Console.WriteLine(statistic);
+            }
             else
                 Console.WriteLine("No AI exe-file " + aiPath);
         }
