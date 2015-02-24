@@ -9,15 +9,19 @@ namespace battleships
 {
     public class Ai
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Process process;
         private readonly string exePath;
-        private readonly ProcessMonitor monitor;
-
-        public Ai(string exePath, ProcessMonitor monitor)
+        public event Action<Process> RunningProcess; 
+       
+        public Ai(string exePath)
         {
             this.exePath = exePath;
-            this.monitor = monitor;
+        }
+
+        public void Restart()
+        {
+            this.process = null;
         }
 
         public string Name
@@ -42,16 +46,16 @@ namespace battleships
         {
             var message = string.Format(messageFormat, args);
             process.StandardInput.WriteLine(message);
-            log.Debug("SEND: " + message);
+            Log.Debug("SEND: " + message);
         }
 
         public void Dispose()
         {
             if (process == null || process.HasExited) return;
-            log.Debug("CLOSE");
+            Log.Debug("CLOSE");
             process.StandardInput.Close();
             if (!process.WaitForExit(500))
-                log.Info("Not terminated {0}", process.ProcessName);
+                Log.Info("Not terminated {0}", process.ProcessName);
             try
             {
                 process.Kill();
@@ -77,19 +81,20 @@ namespace battleships
             };
 
             var aiProcess = Process.Start(startInfo);
-            monitor.Register(aiProcess);
+            if (RunningProcess != null) 
+                RunningProcess(aiProcess);
             return aiProcess;
         }
 
         private Vector ReceiveNextShot()
         {
             var output = process.StandardOutput.ReadLine();
-            log.Debug("RECEIVE " + output);
+            Log.Debug("RECEIVE " + output);
             if (output == null)
             {
                 var err = process.StandardError.ReadToEnd();
                 Console.WriteLine(err);
-                log.Info(err);
+                Log.Info(err);
                 throw new Exception("No ai output");
             }
             try

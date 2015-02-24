@@ -23,7 +23,9 @@ namespace battleships
             var crashes = 0;
             var gamesPlayed = 0;
             var shots = new List<int>();
-            var ai = new Ai(exe, monitor);
+            var ai = new Ai(exe);
+            ai.RunningProcess += monitor.Register;
+
             for (var gameIndex = 0; gameIndex < settings.GamesCount; gameIndex++)
             {
                 var map = gen.GenerateMap();
@@ -35,7 +37,7 @@ namespace battleships
                 {
                     crashes++;
                     if (crashes > settings.CrashLimit) break;
-                    ai = new Ai(exe, monitor);
+                    ai.Restart();
                 }
                 else
                     shots.Add(game.TurnsCount);
@@ -60,13 +62,12 @@ namespace battleships
             while (!game.IsOver())
             {
                 game.MakeStep();
-                if (settings.Interactive)
-                {
-                    vis.Visualize(game);
-                    if (game.AiCrashed)
-                        Console.WriteLine(game.LastError.Message);
-                    Console.ReadKey();
-                }
+                if (!settings.Interactive) continue;
+                
+                vis.Visualize(game);
+                if (game.AiCrashed)
+                    Console.WriteLine(game.LastError.Message);
+                Console.ReadKey();
             }
         }
     }

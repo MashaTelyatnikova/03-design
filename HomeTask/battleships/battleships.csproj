@@ -51,13 +51,14 @@
     <Compile Include="Ai.cs" />
     <Compile Include="Enums\ShotInfo.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="GameResults.cs" />
     <Compile Include="GamesGenerator.cs" />
     <Compile Include="GameVisualizer.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Enums\MapCell.cs" />
     <Compile Include="MapGenerator.cs" />
-    <Compile Include="MapGenerator_should.cs" />
     <Compile Include="MoreEnumerable.cs" />
+    <Compile Include="MyAiTester.cs" />
     <Compile Include="ProcessMonitor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
