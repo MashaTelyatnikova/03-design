@@ -4,10 +4,12 @@ using battleships.Enums;
 
 namespace battleships
 {
-	public static class GameVisualizer
+	public  class GameVisualizer
 	{
-		public static void Visualize(Game game)
+		public void Visualize(Game game)
 		{
+            if (!game.IsInteractive) return;
+		    
 			Console.Clear();
 			Console.WriteLine(MapToString(game));
 			Console.WriteLine("Turn: {0}", game.TurnsCount);
@@ -19,8 +21,14 @@ namespace battleships
 
             if (game.AiCrashed)
                 Console.WriteLine(game.LastError.Message);
+
+		    Console.ReadKey();
 		}
 
+	    public void VisualizeResultGames(Game game)
+	    {
+	        
+	    }
 		private static string MapToString(Game game)
 		{
 			var map = game.Map;

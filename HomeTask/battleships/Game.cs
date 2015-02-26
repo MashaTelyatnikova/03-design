@@ -9,13 +9,14 @@ namespace battleships
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly Ai ai;
-
-        public Game(Map map, Ai ai)
+ 
+        public Game(Map map, Ai ai, bool isInteractive)
         {
             Map = map;
             this.ai = ai;
             TurnsCount = 0;
             BadShots = 0;
+            IsInteractive = isInteractive;
         }
 
         public Vector LastTarget { get; private set; }
@@ -25,6 +26,8 @@ namespace battleships
         public ShotInfo LastShotInfo { get; private set; }
         public bool AiCrashed { get; private set; }
         public Exception LastError { get; private set; }
+        public bool IsInteractive { get; set; }
+
 
         public bool IsOver()
         {
@@ -40,6 +43,7 @@ namespace battleships
             LastShotInfo = new ShotInfo { Target = LastTarget, Hit = hit };
             if (hit == ShotEffect.Miss)
                 TurnsCount++;
+
         }
 
         private bool UpdateLastTarget()

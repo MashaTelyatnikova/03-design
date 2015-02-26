@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -43,7 +42,7 @@ namespace battleships
             return ReceiveNextShot();
         }
 
-        private void SendMessage(string messageFormat, params object[] args)
+        public void SendMessage(string messageFormat, params object[] args)
         {
             var message = string.Format(messageFormat, args);
             process.StandardInput.WriteLine(message);

@@ -15,23 +15,42 @@ namespace battleships
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             if (args.Length == 0)
             {
-                Console.WriteLine("Usage: {0} <ai.exe>", Process.GetCurrentProcess().ProcessName);
+                Console.WriteLine("Usage: {0} <ai.aiPath>", Process.GetCurrentProcess().ProcessName);
                 return;
             }
             var aiPath = args[0];
-            var settings = new Settings("settings.txt");
-            var tester = new AiTester(settings);
-
-            var logger = LogManager.GetLogger("results");
-
+            
             if (File.Exists(aiPath))
             {
-                var statistic = tester.TestSingleFile(aiPath);
+                TestSingleFile(aiPath, new Settings("settings.txt"));
+                
+                Console.ReadKey();
+                
+                TestSingleFile(aiPath, new Settings("settings2.txt"));
+            }
+            else
+                Console.WriteLine("No AI aiPath-file " + aiPath);
+        }
+
+        private static void TestSingleFile(string aiPath, Settings settings)
+        {
+            var logger = LogManager.GetLogger("results");
+            var tester = new AiTester(settings);
+            var monitor = new ProcessMonitor(TimeSpan.FromSeconds(settings.TimeLimitSeconds * settings.GamesCount),
+                settings.MemoryLimit);
+
+            var visualizer = new GameVisualizer();
+            tester.GameStepWasMade += visualizer.Visualize;
+
+            using (var ai = new Ai(aiPath))
+            {
+                ai.RunningProcess += monitor.Register;
+
+                var statistic = tester.TestAi(ai, GamesGenerator.GenerateGames(settings, ai));
+
                 logger.Info(statistic.Message);
                 Console.WriteLine(statistic);
             }
-            else
-                Console.WriteLine("No AI exe-file " + aiPath);
         }
     }
 }

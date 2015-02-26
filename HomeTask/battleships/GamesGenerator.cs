@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace battleships
 {
@@ -16,7 +13,7 @@ namespace battleships
             for (var i = 0; i < settings.GamesCount; ++i)
             {
                 var map = generator.GenerateMap();
-                yield return new Game(map, ai);
+                yield return new Game(map, ai, settings.Interactive);
             }
         } 
     }

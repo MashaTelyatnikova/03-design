@@ -69,6 +69,7 @@
     <Compile Include="Vector.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="settings2.txt" />
     <None Include="README.md" />
     <None Include="settings.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
