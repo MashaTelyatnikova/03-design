@@ -1,9 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using battleships;
 using battleships.Interfaces;
 using FakeItEasy;
-using NLog;
 using NUnit.Framework;
 
 namespace BattleshipsTests
@@ -49,8 +47,9 @@ namespace BattleshipsTests
         [Test]
         public void works_correctly_for_zero_games_amount()
         {
-            var tester = new AiTester(new Settings(), gameVisualizer, mapGenerator, new ProcessMonitor(new TimeSpan(0),0), 
-                LogManager.GetLogger("results"), aiFactory, gameFactory, textWriter, textReader);
+            var settings = new Settings();
+            var tester = new AiTester(new Settings(), gameVisualizer, mapGenerator, new ProcessMonitor(settings), 
+                aiFactory, gameFactory, textWriter, textReader);
             
             tester.TestSingleFile("");
             
@@ -61,8 +60,9 @@ namespace BattleshipsTests
         [Test]
         public void works_correctly_for_one_interactive_game()
         {
-            var tester = new AiTester(new Settings() { GamesCount = 1, Interactive = true }, gameVisualizer, mapGenerator, 
-                new ProcessMonitor(new TimeSpan(0), 0), LogManager.GetLogger("results"), aiFactory, gameFactory, textWriter, textReader);
+            var settings = new Settings() {GamesCount = 1, Interactive = true};
+            var tester = new AiTester(settings, gameVisualizer, mapGenerator, 
+                new ProcessMonitor(settings), aiFactory, gameFactory, textWriter, textReader);
             
             tester.TestSingleFile("");
             
@@ -73,8 +73,9 @@ namespace BattleshipsTests
         [Test]
         public void works_correctly_for_one_non_interactive_game()
         {
-            var tester = new AiTester(new Settings() { GamesCount = 1, Interactive = false }, gameVisualizer, mapGenerator, 
-                new ProcessMonitor(new TimeSpan(0), 0), LogManager.GetLogger("results"), aiFactory, gameFactory, textWriter, textReader);
+            var settings = new Settings() {GamesCount = 1, Interactive = false};
+            var tester = new AiTester(settings, gameVisualizer, mapGenerator, 
+                new ProcessMonitor(settings), aiFactory, gameFactory, textWriter, textReader);
            
             tester.TestSingleFile("");
             
@@ -85,8 +86,9 @@ namespace BattleshipsTests
         [Test]
         public void works_correctly_for_several_non_interactive_games()
         {
-            var tester = new AiTester(new Settings() { GamesCount = 2, Interactive = false }, gameVisualizer, mapGenerator, 
-                new ProcessMonitor(new TimeSpan(0), 0), LogManager.GetLogger("results"), aiFactory, gameFactory, textWriter, textReader);
+            var settings = new Settings() {GamesCount = 2, Interactive = false};
+            var tester = new AiTester(settings, gameVisualizer, mapGenerator, 
+                new ProcessMonitor(settings), aiFactory, gameFactory, textWriter, textReader);
             
             tester.TestSingleFile("");
 

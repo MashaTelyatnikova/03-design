@@ -1,4 +1,4 @@
-﻿interactive false
+﻿interactive true
 verbose		true
 gamesCount	10
 height		20

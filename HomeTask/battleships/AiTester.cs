@@ -9,7 +9,7 @@ namespace battleships
 {
     public class AiTester
     {
-        private readonly Logger resultsLogger;
+        private static readonly Logger ResultsLogger = LogManager.GetLogger("results");
         private readonly Settings settings;
         private readonly IGameVisualizer gameVisualizer;
         private readonly IMapGenerator mapGenerator;
@@ -20,14 +20,13 @@ namespace battleships
         private readonly TextReader textReader;
 
         public AiTester(Settings settings, IGameVisualizer gameVisualizer, IMapGenerator mapGenerator, ProcessMonitor processMonitor, 
-            Logger resultsLogger, IAiFactory aiFactory, IGameFactory gameFactory, TextWriter textWriter, TextReader textReader)
+            IAiFactory aiFactory, IGameFactory gameFactory, TextWriter textWriter, TextReader textReader)
         {
             this.settings = settings;
             this.aiFactory = aiFactory;
             this.gameVisualizer = gameVisualizer;
             this.mapGenerator = mapGenerator;
             this.processMonitor = processMonitor;
-            this.resultsLogger = resultsLogger;
             this.gameFactory = gameFactory;
             this.textReader = textReader;
             this.textWriter = textWriter;
@@ -95,7 +94,7 @@ namespace battleships
             var score = efficiencyScore - crashPenalty - badFraction;
             var headers = FormatTableRow(new object[] { "AiName", "Mean", "Sigma", "Median", "Crashes", "Bad%", "Games", "Score" });
             var message = FormatTableRow(new object[] { ai.Name, mean, sigma, median, crashes, badFraction, gamesPlayed, score });
-            resultsLogger.Info(message);
+            ResultsLogger.Info(message);
             textWriter.WriteLine();
             textWriter.WriteLine("Score statistics");
             textWriter.WriteLine("================");

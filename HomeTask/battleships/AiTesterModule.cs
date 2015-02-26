@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IO;
 using battleships.Interfaces;
 using Ninject.Modules;
-using NLog;
 
 namespace battleships
 {
@@ -10,29 +8,18 @@ namespace battleships
     {
         public override void Load()
         {
-            var settings = new Settings("settings.txt");
-            
             Bind<Settings>().ToSelf().WithConstructorArgument("settingsFilename", "settings.txt");
-           
             Bind<IGameVisualizer>().To<GameVisualizer>();
-           
-            Bind<IMapGenerator>()
-                .To<MapGenerator>()
-                .WithConstructorArgument("width", settings.Width)
-                .WithConstructorArgument("height", settings.Height)
-                .WithConstructorArgument("shipSizes", settings.Ships)
-                .WithConstructorArgument("random", new Random(settings.RandomSeed));
-
-            Bind<ProcessMonitor>()
-                    .ToSelf()
-                    .WithConstructorArgument("timeLimit", TimeSpan.FromSeconds(settings.TimeLimitSeconds * settings.GamesCount))
-                    .WithConstructorArgument("memoryLimit", (long)settings.MemoryLimit);
-
-            Bind<Logger>().ToConstant(LogManager.GetLogger("results"));
+            Bind<IMapGenerator>().To<MapGenerator>();
+            Bind<ProcessMonitor>().ToSelf();
             Bind<IAiFactory>().To<AiFactory>();
             Bind<IGameFactory>().To<GameFactory>();
-            Bind<TextWriter>().ToConstant(Console.Out);
-            Bind<TextReader>().ToConstant(Console.In);
+            Bind<AiTester>()
+                .To<AiTester>()
+                .WithConstructorArgument("textWriter", Console.Out)
+                .WithConstructorArgument("textReader", Console.In);
+
+           
         }
     }
 }

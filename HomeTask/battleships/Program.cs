@@ -3,9 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Threading;
-using battleships.Interfaces;
 using Ninject;
-using NLog;
 
 namespace battleships
 {
