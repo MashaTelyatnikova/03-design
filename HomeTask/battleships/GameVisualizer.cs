@@ -8,8 +8,6 @@ namespace battleships
 	{
 		public void Visualize(Game game)
 		{
-            if (!game.IsInteractive) return;
-		    
 			Console.Clear();
 			Console.WriteLine(MapToString(game));
 			Console.WriteLine("Turn: {0}", game.TurnsCount);

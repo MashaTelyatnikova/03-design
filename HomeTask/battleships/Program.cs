@@ -40,7 +40,8 @@ namespace battleships
                 settings.MemoryLimit);
 
             var visualizer = new GameVisualizer();
-            tester.GameStepWasMade += visualizer.Visualize;
+            if (settings.Interactive)
+                tester.GameStepWasMade += visualizer.Visualize;
 
             using (var ai = new Ai(aiPath))
             {

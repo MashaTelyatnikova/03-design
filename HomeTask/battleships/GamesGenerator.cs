@@ -12,7 +12,7 @@ namespace battleships
                 new Random(settings.RandomSeed));
 
             return Enumerable.Range(0, settings.GamesCount)
-                    .Select(i => new Game(generator.GenerateMap(), ai, settings.Interactive));
+                    .Select(i => new Game(generator.GenerateMap(), ai));
         } 
     }
 }
