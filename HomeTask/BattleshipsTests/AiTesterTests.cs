@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using battleships;
 using battleships.Interfaces;
 using FakeItEasy;
@@ -11,34 +12,31 @@ namespace BattleshipsTests
     {
         private IMapGenerator mapGenerator;
         private IGameVisualizer gameVisualizer;
-        private IAiFactory aiFactory;
-        private IGameFactory gameFactory;
         private TextWriter textWriter;
         private TextReader textReader;
-
+        private Func<string, ProcessMonitor, IAi> createAi;
+        private Func<Map, IAi, IGame> createGame;
+        private Map map = new Map(5, 5);
+        private IAi ai;
         [SetUp]
         public void Init()
         {
             mapGenerator = A.Fake<IMapGenerator>();
-            A.CallTo(() => mapGenerator.GenerateMap()).Returns(new Map(5, 5));
+            A.CallTo(() => mapGenerator.GenerateMap()).Returns(map);
 
             gameVisualizer = A.Fake<IGameVisualizer>();
             A.CallTo(gameVisualizer).Where(call => call.Method.Name == "Visualize").WithAnyArguments().DoesNothing();
 
-            aiFactory = A.Fake<IAiFactory>();
-            var ai = A.Fake<IAi>();
+           
+            ai = A.Fake<IAi>();
+            createAi = (s, monitor) => ai;
+
             A.CallTo(() => ai.Dispose()).DoesNothing();
             A.CallTo(ai).Where(call => call.Method.Name == "Init").WithReturnType<Vector>().Returns(new Vector(0, 0));
             A.CallTo(ai).Where(call => call.Method.Name == "GetNextShot").WithReturnType<Vector>().Returns(new Vector(0, 0));
-            A.CallTo(aiFactory)
-                .Where(call => call.Method.Name == "CreateAi")
-                .WithReturnType<IAi>()
-                .Returns(ai);
-
             var game = A.Fake<IGame>();
             A.CallTo(() => game.MakeStep()).Invokes(() => A.CallTo(()=>game.IsOver()).Returns(true));
-            gameFactory = A.Fake<IGameFactory>();
-            A.CallTo(gameFactory).Where(call => call.Method.Name == "CreateGame").WithReturnType<IGame>().Returns(game);
+            createGame = (map1, ai1) => game;
 
             textWriter = A.Fake<TextWriter>();
             textReader = A.Fake<TextReader>();
@@ -49,7 +47,7 @@ namespace BattleshipsTests
         {
             var settings = new Settings();
             var tester = new AiTester(new Settings(), gameVisualizer, mapGenerator, new ProcessMonitor(settings), 
-                aiFactory, gameFactory, textWriter, textReader);
+                createAi, createGame, textWriter, textReader);
             
             tester.TestSingleFile("");
             
@@ -62,7 +60,7 @@ namespace BattleshipsTests
         {
             var settings = new Settings() {GamesCount = 1, Interactive = true};
             var tester = new AiTester(settings, gameVisualizer, mapGenerator, 
-                new ProcessMonitor(settings), aiFactory, gameFactory, textWriter, textReader);
+                new ProcessMonitor(settings), createAi, createGame, textWriter, textReader);
             
             tester.TestSingleFile("");
             
@@ -75,7 +73,7 @@ namespace BattleshipsTests
         {
             var settings = new Settings() {GamesCount = 1, Interactive = false};
             var tester = new AiTester(settings, gameVisualizer, mapGenerator, 
-                new ProcessMonitor(settings), aiFactory, gameFactory, textWriter, textReader);
+                new ProcessMonitor(settings), createAi, createGame, textWriter, textReader);
            
             tester.TestSingleFile("");
             
@@ -86,17 +84,16 @@ namespace BattleshipsTests
         [Test]
         public void works_correctly_for_several_non_interactive_games()
         {
+            
             var settings = new Settings() {GamesCount = 2, Interactive = false};
-            var tester = new AiTester(settings, gameVisualizer, mapGenerator, 
-                new ProcessMonitor(settings), aiFactory, gameFactory, textWriter, textReader);
+            var m = new ProcessMonitor(settings);
+            var tester = new AiTester(settings, gameVisualizer, mapGenerator, m
+                , createAi, createGame, textWriter, textReader);
             
             tester.TestSingleFile("");
 
-            Assert.DoesNotThrow(() => A.CallTo(aiFactory).Where(call => call.Method.Name == "CreateAi").WithAnyArguments()
-                .MustHaveHappened(Repeated.Exactly.Once));
-            
-            Assert.DoesNotThrow(() => A.CallTo(gameFactory).Where(call => call.Method.Name == "CreateGame").WithAnyArguments()
-                .MustHaveHappened(Repeated.Exactly.Twice));
+            Assert.DoesNotThrow(() => A.CallTo(createAi("", m)).MustHaveHappened());
+            Assert.DoesNotThrow(() => A.CallTo(createGame(map, ai)).MustHaveHappened());
         }
     }
 }
