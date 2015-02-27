@@ -25,10 +25,6 @@ namespace battleships
 		    Console.ReadKey();
 		}
 
-	    public void VisualizeResultGames(Game game)
-	    {
-	        
-	    }
 		private static string MapToString(Game game)
 		{
 			var map = game.Map;

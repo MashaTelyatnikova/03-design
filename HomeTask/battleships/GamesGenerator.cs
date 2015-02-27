@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace battleships
 {
@@ -10,11 +11,8 @@ namespace battleships
             var generator = new MapGenerator(settings.Width, settings.Height, settings.Ships,
                 new Random(settings.RandomSeed));
 
-            for (var i = 0; i < settings.GamesCount; ++i)
-            {
-                var map = generator.GenerateMap();
-                yield return new Game(map, ai, settings.Interactive);
-            }
+            return Enumerable.Range(0, settings.GamesCount)
+                    .Select(i => new Game(generator.GenerateMap(), ai, settings.Interactive));
         } 
     }
 }

@@ -24,17 +24,8 @@ namespace battleships
         {
             var startShipCell = Direction == ShipDirection.Horizontal ? new Vector(1, 0) : new Vector(0, 1);
 
-            for (var i = 0; i < Size; ++i)
-            {
-                var shipCell = startShipCell.Mult(i).Add(Location);
-                yield return shipCell;
-            }
+            return Enumerable.Range(0, Size).Select(i => startShipCell.Mult(i).Add(Location));
         }
-
-        public IEnumerable<Vector> GetAliveCells()
-        {
-            return aliveCells;
-        } 
 
         public void KillCell(Vector cell)
         {
