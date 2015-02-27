@@ -11,12 +11,12 @@ namespace battleships
         private readonly int[] shipSizes;
         private readonly int width;
 
-        public MapGenerator(int width, int height, int[] shipSizes, Random random)
+        public MapGenerator(Settings settings)
         {
-            this.width = width;
-            this.height = height;
-            this.shipSizes = shipSizes.OrderByDescending(s => s).ToArray();
-            this.random = random;
+            this.width = settings.Width;
+            this.height = settings.Height;
+            this.shipSizes = settings.Ships.OrderByDescending(s => s).ToArray();
+            this.random = new Random(settings.RandomSeed);
         }
 
         public Map GenerateMap()

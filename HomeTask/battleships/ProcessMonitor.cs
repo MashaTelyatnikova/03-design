@@ -9,7 +9,7 @@ namespace battleships
 {
 	public class ProcessMonitor
 	{
-		private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+		private static readonly Logger log = LogManager.GetCurrentClassLogger();
 		private readonly object locker = new object();
 		private readonly long memoryLimit;
 		private readonly List<Process> processes = new List<Process>();
@@ -34,7 +34,6 @@ namespace battleships
 					}
 					Thread.Sleep(500);
 				}
-				// ReSharper disable once FunctionNeverReturns
 			})
 			{
 				IsBackground = true,
@@ -63,7 +62,7 @@ namespace battleships
 		private void CheckParameter<T>(T param, T limit, Process process, string message) where T : IComparable<T>
 		{
 			if (param.CompareTo(limit) <= 0) return;
-			Log.Error(message + " {0}: {1}", process.ProcessName, param);
+			log.Error(message + " {0}: {1}", process.ProcessName, param);
 			process.Kill();
 			processes.Remove(process);
 		}

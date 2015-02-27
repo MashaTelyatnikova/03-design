@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace battleships
 {
     public class Statistic
@@ -17,15 +13,20 @@ namespace battleships
         public int GamesCount { get; private set; }
         public double Score { get; private set; }
         public string Message { get; private set; }
+
         public Statistic(string aiName, List<int> shots, int crashes, int badShots, int gamesPlayed, Settings settings)
         {
             GamesCount = gamesPlayed;
             AiName = aiName;
-            if (shots.Count == 0) shots.Add(1000 * 1000);
+
+            if (shots.Count == 0)
+                shots.Add(1000 * 1000);
             shots.Sort();
-            Median = shots.Count % 2 == 1 ? shots[shots.Count / 2] : (shots[shots.Count / 2] + shots[(shots.Count + 1) / 2]) / 2;
+            
+            Median = shots.Median();
             Mean = shots.Average();
-            Sigma = Math.Sqrt(shots.Average(s => (s - Mean) * (s - Mean)));
+            Sigma = shots.Sigma();
+            
             BadFractionInPercent = (100.0 * badShots) / shots.Sum();
             var crashPenalty = 100.0 * crashes / settings.CrashLimit;
             var efficiencyScore = 100.0 * (settings.Width * settings.Height - Mean) / (settings.Width * settings.Height);
@@ -39,7 +40,7 @@ namespace battleships
             return string.Format("\nScore statistics\n================\n{0}\n{1}", headers, Message);
         }
 
-        private static string FormatTableRow(object[] values)
+        private static string FormatTableRow(IReadOnlyList<object> values)
         {
             return FormatValue(values[0], 15)
                 + string.Join(" ", values.Skip(1).Select(v => FormatValue(v, 7)));

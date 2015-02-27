@@ -17,7 +17,13 @@ namespace battleships
 		{
 			return items.Count%2 == 1 ? items[items.Count/2 - 1] : (items[(items.Count - 1)/2] + items[(items.Count + 1)/2])/2.0;
 		}
-		
+
+	    public static double Sigma(this IReadOnlyList<int> items)
+	    {
+	        var mean = items.Average();
+            return Math.Sqrt(items.Average(s => (s - mean) * (s - mean)));
+	    }
+
 		public static IEnumerable<T> Repeat<T>(this Func<T> getItem)
 		{
 			while (true)

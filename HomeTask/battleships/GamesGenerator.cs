@@ -8,8 +8,7 @@ namespace battleships
     {
         public static IEnumerable<Game> GenerateGames(Settings settings, Ai ai)
         {
-            var generator = new MapGenerator(settings.Width, settings.Height, settings.Ships,
-                new Random(settings.RandomSeed));
+            var generator = new MapGenerator(settings);
 
             return Enumerable.Range(0, settings.GamesCount)
                     .Select(i => new Game(generator.GenerateMap(), ai));
