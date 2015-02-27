@@ -81,7 +81,7 @@ namespace battleships
             };
 
             var aiProcess = Process.Start(startInfo);
-            if (RunningProcess != null) 
+            if (RunningProcess != null)
                 RunningProcess(aiProcess);
             return aiProcess;
         }

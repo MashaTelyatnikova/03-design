@@ -10,14 +10,9 @@ namespace battleships
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly Ai ai;
 
-        public Game(Map map, Ai ai)
-        {
-            Map = map;
-            this.ai = ai;
-            TurnsCount = 0;
-            BadShots = 0;
-        }
+        public event Action<Game> GameStepWasMade;
 
+        public int Index { get; private set; }
         public Vector LastTarget { get; private set; }
         public int TurnsCount { get; private set; }
         public int BadShots { get; private set; }
@@ -26,12 +21,33 @@ namespace battleships
         public bool AiCrashed { get; private set; }
         public Exception LastError { get; private set; }
 
+        public Game(Map map, Ai ai, int index)
+        {
+            this.ai = ai;
+
+            Index = index;
+            Map = map;
+
+            TurnsCount = 0;
+            BadShots = 0;
+        }
+
         public bool IsOver()
         {
             return !Map.HasAliveShips() || AiCrashed;
         }
 
-        public void MakeStep()
+        public void PlayToEnd()
+        {
+            while (!IsOver())
+            {
+                MakeStep();
+                if (GameStepWasMade != null)
+                    GameStepWasMade(this);
+            }
+        }
+
+        private void MakeStep()
         {
             if (IsOver()) throw new InvalidOperationException("Game is Over");
             if (!UpdateLastTarget()) return;
@@ -40,7 +56,6 @@ namespace battleships
             LastShotInfo = new ShotInfo { Target = LastTarget, Hit = hit };
             if (hit == ShotEffect.Miss)
                 TurnsCount++;
-
         }
 
         private bool UpdateLastTarget()
@@ -50,6 +65,7 @@ namespace battleships
                 LastTarget = LastTarget == null
                     ? ai.Init(Map.Width, Map.Height, Map.AllShips.Select(s => s.Size).ToArray())
                     : ai.GetNextShot(LastShotInfo.Target, LastShotInfo.Hit);
+
                 return true;
             }
             catch (Exception e)
@@ -58,6 +74,7 @@ namespace battleships
                 Log.Info("Ai {0} crashed", ai.Name);
                 Log.Error(e);
                 LastError = e;
+
                 return false;
             }
         }
@@ -68,7 +85,13 @@ namespace battleships
             var cellIsNearDestroyedShip = Map.GetNearbyCells(target).Any(c => Map.Ships[c.X, c.Y] != null && !Map.Ships[c.X, c.Y].IsAlive);
             var diagonals = new[] { new Vector(-1, -1), new Vector(-1, 1), new Vector(1, -1), new Vector(1, 1) };
             var cellHaveWoundedDiagonalNeighbour = diagonals.Any(d => Map[target.Add(d)] == MapCell.DeadOrWoundedShip);
+
             return cellWasHitAlready || cellIsNearDestroyedShip || cellHaveWoundedDiagonalNeighbour;
+        }
+
+        public GameStatistic GetStatistic()
+        {
+            return new GameStatistic(TurnsCount, BadShots, AiCrashed);
         }
     }
 }

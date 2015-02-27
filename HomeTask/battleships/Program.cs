@@ -19,13 +19,13 @@ namespace battleships
                 return;
             }
             var aiPath = args[0];
-            
+
             if (File.Exists(aiPath))
             {
                 TestSingleFile(aiPath, new Settings("settings.txt"));
-                
+
                 Console.ReadKey();
-                
+
                 TestSingleFile(aiPath, new Settings("settings2.txt"));
             }
             else
@@ -43,6 +43,9 @@ namespace battleships
             if (settings.Interactive)
                 tester.GameStepWasMade += visualizer.Visualize;
 
+            if (settings.Verbose)
+                tester.GameCompleted += DisplayGameDetails;
+
             using (var ai = new Ai(aiPath))
             {
                 ai.RunningProcess += monitor.Register;
@@ -52,6 +55,13 @@ namespace battleships
                 logger.Info(statistic.Message);
                 Console.WriteLine(statistic);
             }
+        }
+
+        private static void DisplayGameDetails(Game game)
+        {
+            Console.WriteLine(
+                        "Game #{3,4}: Turns {0,4}, BadShots {1}{2}",
+                        game.TurnsCount, game.BadShots, game.AiCrashed ? ", Crashed" : "", game.Index);
         }
     }
 }

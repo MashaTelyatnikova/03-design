@@ -11,7 +11,7 @@ namespace battleships
             var generator = new MapGenerator(settings);
 
             return Enumerable.Range(0, settings.GamesCount)
-                    .Select(i => new Game(generator.GenerateMap(), ai));
-        } 
+                    .Select(i => new Game(generator.GenerateMap(), ai, i));
+        }
     }
 }

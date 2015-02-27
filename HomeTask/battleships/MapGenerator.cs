@@ -13,10 +13,10 @@ namespace battleships
 
         public MapGenerator(Settings settings)
         {
-            this.width = settings.Width;
-            this.height = settings.Height;
-            this.shipSizes = settings.Ships.OrderByDescending(s => s).ToArray();
-            this.random = new Random(settings.RandomSeed);
+            width = settings.Width;
+            height = settings.Height;
+            shipSizes = settings.Ships.OrderByDescending(s => s).ToArray();
+            random = new Random(settings.RandomSeed);
         }
 
         public Map GenerateMap()
