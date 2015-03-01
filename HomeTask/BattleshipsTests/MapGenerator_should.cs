@@ -1,4 +1,5 @@
-﻿using battleships;
+﻿using System.Linq;
+using battleships;
 using battleships.MapUtils;
 using NUnit.Framework;
 
@@ -18,8 +19,7 @@ namespace BattleshipsTests
                 RandomSeed = 0
             };
             var gen = new MapGenerator(settings);
-            for (var i = 0; i < 10000; i++)
-                gen.GenerateMap();
+            var maps = gen.GenerateMaps().Take(10000).ToList();
         }
     }
 }

@@ -41,19 +41,17 @@ namespace battleships.GameUtils
 
         public void PlayToEnd()
         {
-           
-                while (!IsOver())
-                {
-                    MakeStep();
-                    if (GameStepWasMade != null)
-                        GameStepWasMade(this);
-                }
-            
+            while (!IsOver())
+            {
+                MakeStep();
+                if (GameStepWasMade != null)
+                    GameStepWasMade(this);
+            }
         }
 
         private void MakeStep()
         {
-            if (IsOver()) 
+            if (IsOver())
                 throw new InvalidOperationException("Game is Over");
             if (!UpdateLastTarget()) return;
             if (IsBadShot(LastTarget)) BadShots++;
