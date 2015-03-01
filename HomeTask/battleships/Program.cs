@@ -4,6 +4,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using battleships.AiUtils;
+using battleships.GameUtils;
+using battleships.MapUtils;
 using NLog;
 
 namespace battleships
@@ -47,9 +50,12 @@ namespace battleships
             {
                 ai.RunningProcess += monitor.Register;
 
-                var gameStatistics = tester.TestAi(ai, GamesGenerator.GenerateGames(settings, ai), settings.CrashLimit).ToList();
+                var maps = new MapGenerator(settings).GenerateMaps();
+                var games = GamesGenerator.GenerateGames(maps, ai).Take(settings.GamesCount);
+
+                var gameStatistics = tester.TestAi(ai, games, settings.CrashLimit).ToList();
                 var resultStatistic = new ResultStatistic(ai.Name, gameStatistics, settings);
-                
+
                 logger.Info(resultStatistic.Message);
                 Console.WriteLine(resultStatistic);
             }

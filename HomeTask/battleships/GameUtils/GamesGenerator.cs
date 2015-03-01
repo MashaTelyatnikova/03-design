@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using battleships.AiUtils;
+using battleships.MapUtils;
 
 namespace battleships.GameUtils
 {
     public static class GamesGenerator
     {
-        public static IEnumerable<Game> GenerateGames(Settings settings, Ai ai)
+        public static IEnumerable<Game> GenerateGames(IEnumerable<Map> maps, Ai ai)
         {
-            var generator = new MapGenerator(settings);
-
-            return Enumerable.Range(0, settings.GamesCount)
-                    .Select(i => new Game(generator.GenerateMap(), ai, i));
+            return maps.Select((map, index) => new Game(map, ai, index));
         }
     }
 }

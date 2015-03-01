@@ -7,7 +7,7 @@ namespace battleships.MapUtils
 {
     public class Map
     {
-        private static MapCell[,] cells;
+        private readonly MapCell[,] cells;
         public Ship[,] Ships { get; private set; }
         public List<Ship> AllShips { get; private set; }
         public int Width { get; private set; }
@@ -24,7 +24,7 @@ namespace battleships.MapUtils
             {
                 if (!IsCorrectCell(cell))
                     throw new IndexOutOfRangeException(cell + " is not in the map borders");
-                
+
                 cells[cell.X, cell.Y] = value;
             }
         }

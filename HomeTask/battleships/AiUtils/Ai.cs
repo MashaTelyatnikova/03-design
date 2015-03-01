@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using battleships.Enums;
+using battleships.MapUtils;
 using NLog;
 
 namespace battleships.AiUtils

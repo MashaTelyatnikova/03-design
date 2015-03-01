@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using battleships.Enums;
 
@@ -19,7 +20,15 @@ namespace battleships.MapUtils
             random = new Random(settings.RandomSeed);
         }
 
-        public Map GenerateMap()
+        public IEnumerable<Map> GenerateMaps()
+        {
+            while (true)
+            {
+                yield return GenerateMap();
+            }
+        }
+
+        private Map GenerateMap()
         {
             var map = new Map(width, height);
             foreach (var size in shipSizes)

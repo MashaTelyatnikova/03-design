@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using battleships.Enums;
+using battleships.MapUtils;
 
 namespace battleships.GameUtils
 {

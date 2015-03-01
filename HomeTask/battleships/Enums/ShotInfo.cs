@@ -1,4 +1,6 @@
-﻿namespace battleships.Enums
+﻿using battleships.MapUtils;
+
+namespace battleships.Enums
 {
     public class ShotInfo
     {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using battleships.GameUtils;
 
 namespace battleships
 {
@@ -15,7 +16,17 @@ namespace battleships
 
 		public static double Median(this IReadOnlyList<int> items)
 		{
-			return items.Count%2 == 1 ? items[items.Count/2 - 1] : (items[(items.Count - 1)/2] + items[(items.Count + 1)/2])/2.0;
+		    var n = items.Count;
+		    var median = 0.0;
+		    if (n%2 != 0)
+		    {
+		        median = items[(n + 1)/2 - 1];
+		    }
+		    else
+		    {
+		        median = (items[n/2 - 1] + items[n/2])/2.0;
+		    }
+		    return median;
 		}
 
 	    public static double Sigma(this IReadOnlyList<int> items)
@@ -24,19 +35,10 @@ namespace battleships
             return Math.Sqrt(items.Average(s => (s - mean) * (s - mean)));
 	    }
 
-		public static IEnumerable<T> Repeat<T>(this Func<T> getItem)
-		{
-			while (true)
-				yield return getItem();
-		}
-
-		public static IEnumerable<T> Select<T>(this IEnumerable<T> items, Action<T, int> process)
-		{
-			return items.Select((item, index) =>
-			{
-				process(item, index);
-				return item;
-			});
-		}
+	    public static IEnumerable<T> Repeat<T>(this Func<T> getItem)
+	    {
+	        while (true)
+	            yield return getItem();
+	    }
 	}
 }

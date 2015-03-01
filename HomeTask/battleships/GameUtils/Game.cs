@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+using battleships.AiUtils;
 using battleships.Enums;
+using battleships.MapUtils;
 using NLog;
 
 namespace battleships.GameUtils
@@ -39,22 +41,14 @@ namespace battleships.GameUtils
 
         public void PlayToEnd()
         {
-            try
-            {
+           
                 while (!IsOver())
                 {
                     MakeStep();
                     if (GameStepWasMade != null)
                         GameStepWasMade(this);
                 }
-            }
-            catch (Exception ex)
-            {
-                AiCrashed = true;
-                Log.Info("Ai {0} crashed", ai.Name);
-                Log.Error(ex);
-                LastError = ex;
-            }
+            
         }
 
         private void MakeStep()
@@ -71,11 +65,21 @@ namespace battleships.GameUtils
 
         private bool UpdateLastTarget()
         {
-            LastTarget = LastTarget == null
+            try
+            {
+                LastTarget = LastTarget == null
                     ? ai.Init(Map.Width, Map.Height, Map.AllShips.Select(s => s.Size).ToArray())
                     : ai.GetNextShot(LastShotInfo.Target, LastShotInfo.Hit);
-
-            return true;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AiCrashed = true;
+                Log.Info("Ai {0} crashed", ai.Name);
+                Log.Error(ex);
+                LastError = ex;
+                return false;
+            }
         }
 
         private bool IsBadShot(Vector target)
