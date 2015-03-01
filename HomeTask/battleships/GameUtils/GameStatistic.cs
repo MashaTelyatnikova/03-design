@@ -1,4 +1,4 @@
-﻿namespace battleships
+﻿namespace battleships.GameUtils
 {
     public class GameStatistic
     {

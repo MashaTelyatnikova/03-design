@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace battleships
+namespace battleships.MapUtils
 {
     public class Vector
     {

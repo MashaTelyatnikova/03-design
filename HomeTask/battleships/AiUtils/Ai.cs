@@ -5,7 +5,7 @@ using System.Linq;
 using battleships.Enums;
 using NLog;
 
-namespace battleships
+namespace battleships.AiUtils
 {
     public class Ai : IDisposable
     {

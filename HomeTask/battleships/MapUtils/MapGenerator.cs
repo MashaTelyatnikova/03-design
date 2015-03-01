@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using battleships.Enums;
 
-namespace battleships
+namespace battleships.MapUtils
 {
     public class MapGenerator
     {

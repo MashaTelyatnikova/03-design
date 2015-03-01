@@ -3,7 +3,7 @@ using System.Linq;
 using battleships.Enums;
 using NLog;
 
-namespace battleships
+namespace battleships.GameUtils
 {
     public class Game
     {

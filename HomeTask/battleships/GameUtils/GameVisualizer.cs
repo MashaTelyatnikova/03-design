@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using battleships.Enums;
 
-namespace battleships
+namespace battleships.GameUtils
 {
     public class GameVisualizer
     {

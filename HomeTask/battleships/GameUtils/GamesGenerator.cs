@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace battleships
+namespace battleships.GameUtils
 {
     public static class GamesGenerator
     {
