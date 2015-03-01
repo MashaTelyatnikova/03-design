@@ -1,3 +1,4 @@
+using battleships.Enums;
 using NUnit.Framework;
 
 namespace battleships

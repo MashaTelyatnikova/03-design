@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using battleships.Enums;
 using NUnit.Framework;
 
 namespace battleships
@@ -16,7 +17,7 @@ namespace battleships
             Assert.That(ship.Direction, Is.EqualTo(ShipDirection.Horizontal));
             Assert.That(ship.Location, Is.EqualTo(new Vector(0, 0)));
             Assert.That(ship.IsAlive, Is.True);
-            Assert.That(ship.GetAliveCells(), Is.EqualTo(cells));
+            Assert.That(ship.aliveCells, Is.EqualTo(cells));
         }
 
         [Test]
@@ -29,7 +30,7 @@ namespace battleships
             Assert.That(ship.Direction, Is.EqualTo(ShipDirection.Vertical));
             Assert.That(ship.Location, Is.EqualTo(new Vector(0, 0)));
             Assert.That(ship.IsAlive, Is.True);
-            Assert.That(ship.GetAliveCells(), Is.EqualTo(cells));
+            Assert.That(ship.aliveCells, Is.EqualTo(cells));
         }
 
         [Test]

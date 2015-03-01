@@ -10,7 +10,7 @@ namespace battleships
         public ShipDirection Direction { get; private set; }
         public bool IsAlive { get { return aliveCells.Any(); } }
         public Vector Location { get; private set; }
-        private readonly HashSet<Vector> aliveCells;
+        public HashSet<Vector> aliveCells { get; private set; }
 
         public Ship(Vector location, int size, ShipDirection direction)
         {

@@ -48,7 +48,7 @@ namespace battleships
                 ai.RunningProcess += monitor.Register;
 
                 var gameStatistics = tester.TestAi(ai, GamesGenerator.GenerateGames(settings, ai), settings.CrashLimit).ToList();
-                var resultStatistic = new ResultStatistic(aiPath, gameStatistics, settings);
+                var resultStatistic = new ResultStatistic(ai.Name, gameStatistics, settings);
                 
                 logger.Info(resultStatistic.Message);
                 Console.WriteLine(resultStatistic);
