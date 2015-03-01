@@ -1,7 +1,8 @@
-﻿using System;
+﻿using battleships;
+using battleships.MapUtils;
 using NUnit.Framework;
 
-namespace battleships
+namespace BattleshipsTests
 {
     [TestFixture]
     public class MapGenerator_should

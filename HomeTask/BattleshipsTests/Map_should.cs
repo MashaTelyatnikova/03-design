@@ -1,7 +1,8 @@
 using battleships.Enums;
+using battleships.MapUtils;
 using NUnit.Framework;
 
-namespace battleships
+namespace BattleshipsTests
 {
     [TestFixture]
     public class Map_should
