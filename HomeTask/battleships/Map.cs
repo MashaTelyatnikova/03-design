@@ -24,6 +24,7 @@ namespace battleships
             {
                 if (!IsCorrectCell(cell))
                     throw new IndexOutOfRangeException(cell + " is not in the map borders");
+                
                 cells[cell.X, cell.Y] = value;
             }
         }

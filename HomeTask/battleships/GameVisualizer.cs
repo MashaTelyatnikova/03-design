@@ -6,7 +6,7 @@ namespace battleships
 {
     public class GameVisualizer
     {
-        public void Visualize(Game game)
+        public void VisualizeGameStep(Game game)
         {
             Console.Clear();
             Console.WriteLine(MapToString(game));
@@ -21,6 +21,13 @@ namespace battleships
                 Console.WriteLine(game.LastError.Message);
 
             Console.ReadKey();
+        }
+
+        public void VisualizeGameEnd(Game game)
+        {
+            Console.WriteLine(
+                        "Game #{3,4}: Turns {0,4}, BadShots {1}{2}",
+                        game.TurnsCount, game.BadShots, game.AiCrashed ? ", Crashed" : "", game.Index);
         }
 
         private static string MapToString(Game game)

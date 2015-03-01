@@ -39,17 +39,28 @@ namespace battleships
 
         public void PlayToEnd()
         {
-            while (!IsOver())
+            try
             {
-                MakeStep();
-                if (GameStepWasMade != null)
-                    GameStepWasMade(this);
+                while (!IsOver())
+                {
+                    MakeStep();
+                    if (GameStepWasMade != null)
+                        GameStepWasMade(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                AiCrashed = true;
+                Log.Info("Ai {0} crashed", ai.Name);
+                Log.Error(ex);
+                LastError = ex;
             }
         }
 
         private void MakeStep()
         {
-            if (IsOver()) throw new InvalidOperationException("Game is Over");
+            if (IsOver()) 
+                throw new InvalidOperationException("Game is Over");
             if (!UpdateLastTarget()) return;
             if (IsBadShot(LastTarget)) BadShots++;
             var hit = Map.DoShot(LastTarget);
@@ -60,23 +71,11 @@ namespace battleships
 
         private bool UpdateLastTarget()
         {
-            try
-            {
-                LastTarget = LastTarget == null
+            LastTarget = LastTarget == null
                     ? ai.Init(Map.Width, Map.Height, Map.AllShips.Select(s => s.Size).ToArray())
                     : ai.GetNextShot(LastShotInfo.Target, LastShotInfo.Hit);
 
-                return true;
-            }
-            catch (Exception e)
-            {
-                AiCrashed = true;
-                Log.Info("Ai {0} crashed", ai.Name);
-                Log.Error(e);
-                LastError = e;
-
-                return false;
-            }
+            return true;
         }
 
         private bool IsBadShot(Vector target)

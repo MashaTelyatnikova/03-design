@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using NLog;
 
@@ -23,10 +24,6 @@ namespace battleships
             if (File.Exists(aiPath))
             {
                 TestSingleFile(aiPath, new Settings("settings.txt"));
-
-                Console.ReadKey();
-
-                TestSingleFile(aiPath, new Settings("settings2.txt"));
             }
             else
                 Console.WriteLine("No AI aiPath-file " + aiPath);
@@ -35,33 +32,27 @@ namespace battleships
         private static void TestSingleFile(string aiPath, Settings settings)
         {
             var logger = LogManager.GetLogger("results");
-            var tester = new AiTester(settings);
+            var tester = new AiTester();
             var monitor = new ProcessMonitor(TimeSpan.FromSeconds(settings.TimeLimitSeconds * settings.GamesCount),
                 settings.MemoryLimit);
 
             var visualizer = new GameVisualizer();
             if (settings.Interactive)
-                tester.GameStepWasMade += visualizer.Visualize;
+                tester.GameStepWasMade += visualizer.VisualizeGameStep;
 
             if (settings.Verbose)
-                tester.GameCompleted += DisplayGameDetails;
+                tester.GameCompleted += visualizer.VisualizeGameEnd;
 
             using (var ai = new Ai(aiPath))
             {
                 ai.RunningProcess += monitor.Register;
 
-                var statistic = tester.TestAi(ai, GamesGenerator.GenerateGames(settings, ai));
-
-                logger.Info(statistic.Message);
-                Console.WriteLine(statistic);
+                var gameStatistics = tester.TestAi(ai, GamesGenerator.GenerateGames(settings, ai), settings.CrashLimit).ToList();
+                var resultStatistic = new ResultStatistic(aiPath, gameStatistics, settings);
+                
+                logger.Info(resultStatistic.Message);
+                Console.WriteLine(resultStatistic);
             }
-        }
-
-        private static void DisplayGameDetails(Game game)
-        {
-            Console.WriteLine(
-                        "Game #{3,4}: Turns {0,4}, BadShots {1}{2}",
-                        game.TurnsCount, game.BadShots, game.AiCrashed ? ", Crashed" : "", game.Index);
         }
     }
 }
