@@ -1,7 +1,10 @@
 using System;
+using System.Activities.Statements;
+using System.Linq;
 using System.Text;
 using battleships.Enums;
 using battleships.MapUtils;
+using MoreLinq;
 
 namespace battleships.GameUtils
 {
@@ -34,14 +37,12 @@ namespace battleships.GameUtils
         private static string MapToString(Game game)
         {
             var map = game.Map;
-            var sb = new StringBuilder();
-            for (var y = 0; y < map.Height; y++)
-            {
-                for (var x = 0; x < map.Width; x++)
-                    sb.Append(GetSymbol(map[new Vector(x, y)]));
-                sb.AppendLine();
-            }
-            return sb.ToString();
+
+            return Enumerable.Range(0, map.Height)
+                                .Cartesian(Enumerable.Range(0, map.Width), (x, y) => GetSymbol(map[new Vector(x, y)]))
+                                .Batch(map.Width)
+                                .Select(x => x.ToDelimitedString(""))
+                                .ToDelimitedString("\n");
         }
 
         private static string GetSymbol(MapCell cell)

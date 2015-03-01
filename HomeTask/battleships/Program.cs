@@ -46,6 +46,7 @@ namespace battleships
             if (settings.Verbose)
                 tester.GameCompleted += visualizer.VisualizeGameEnd;
 
+
             using (var ai = new Ai(aiPath))
             {
                 ai.RunningProcess += monitor.Register;

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using MoreLinq;
 
 namespace battleships.MapUtils
 {
@@ -57,10 +58,8 @@ namespace battleships.MapUtils
 
         public static IEnumerable<Vector> Rect(int minX, int minY, int width, int height)
         {
-            return
-                from x in Enumerable.Range(minX, width)
-                from y in Enumerable.Range(minY, height)
-                select new Vector(x, y);
+            return Enumerable.Range(minX, width)
+                                .Cartesian(Enumerable.Range(minY, height), (x, y) => new Vector(x, y));
         }
     }
 }

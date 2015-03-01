@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using battleships.Enums;
+using MoreLinq;
 
 namespace battleships.MapUtils
 {
@@ -51,11 +52,12 @@ namespace battleships.MapUtils
 
             if (!IsPossibleSetShip(shipCells)) return false;
 
-            foreach (var cell in shipCells)
+            shipCells.ForEach(cell =>
             {
                 this[cell] = MapCell.Ship;
                 Ships[cell.X, cell.Y] = ship;
-            }
+            });
+
 
             AllShips.Add(ship);
             return true;
@@ -103,12 +105,9 @@ namespace battleships.MapUtils
 
         public IEnumerable<Vector> GetNearbyCells(Vector cell)
         {
-            return
-                from x in new[] { -1, 0, 1 }
-                from y in new[] { -1, 0, 1 }
-                let currentCell = cell.Add(new Vector(x, y))
-                where IsCorrectCell(currentCell)
-                select currentCell;
+            return new[] { -1, 0, 1 }
+                                   .Cartesian(new[] { -1, 0, 1 }, (x, y) => cell.Add(new Vector(x, y)))
+                                   .Where(IsCorrectCell);
         }
 
         private bool IsCorrectCell(Vector cell)

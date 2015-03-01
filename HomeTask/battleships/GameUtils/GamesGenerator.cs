@@ -2,6 +2,7 @@
 using System.Linq;
 using battleships.AiUtils;
 using battleships.MapUtils;
+using MoreLinq;
 
 namespace battleships.GameUtils
 {
@@ -9,7 +10,7 @@ namespace battleships.GameUtils
     {
         public static IEnumerable<Game> GenerateGames(IEnumerable<Map> maps, Ai ai)
         {
-            return maps.Select((map, index) => new Game(map, ai, index));
+            return maps.Index().Select(pair => new Game(pair.Value, ai, pair.Key));
         }
     }
 }

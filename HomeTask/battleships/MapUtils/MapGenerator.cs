@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using battleships.Enums;
+using MoreLinq;
 
 namespace battleships.MapUtils
 {
@@ -24,21 +25,17 @@ namespace battleships.MapUtils
         {
             while (true)
             {
-                yield return GenerateMap();
-            }
-        }
+                var map = new Map(width, height);
+                shipSizes.ForEach(size => PlaceShip(map, size));
 
-        private Map GenerateMap()
-        {
-            var map = new Map(width, height);
-            foreach (var size in shipSizes)
-                PlaceShip(map, size);
-            return map;
+                yield return map;
+            }
         }
 
         private void PlaceShip(Map map, int size)
         {
             var cells = Vector.Rect(0, 0, width, height).OrderBy(v => random.Next());
+          
             foreach (var loc in cells)
             {
                 var direction = random.Next(2) == 0 ? ShipDirection.Horizontal : ShipDirection.Vertical;
