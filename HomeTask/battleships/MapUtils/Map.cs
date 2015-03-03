@@ -24,7 +24,9 @@ namespace battleships.MapUtils
             private set
             {
                 if (!IsCorrectCell(cell))
+                {
                     throw new IndexOutOfRangeException(cell + " is not in the map borders");
+                }
 
                 cells[cell.X, cell.Y] = value;
             }
@@ -33,9 +35,13 @@ namespace battleships.MapUtils
         public Map(int width, int height)
         {
             if (width < 0)
+            {
                 throw new ArgumentException("Width should be > 0.");
+            }
             if (height < 0)
+            {
                 throw new ArgumentException("Height should be > 0.");
+            }
 
             Width = width;
             Height = height;
@@ -50,7 +56,10 @@ namespace battleships.MapUtils
             var ship = new Ship(shipStartCell, shipSize, shipDirection);
             var shipCells = ship.GetShipCells().ToList();
 
-            if (!IsPossibleSetShip(shipCells)) return false;
+            if (!IsPossibleSetShip(shipCells))
+            {
+                return false;
+            }
 
             shipCells.ForEach(cell =>
             {
@@ -61,6 +70,28 @@ namespace battleships.MapUtils
 
             AllShips.Add(ship);
             return true;
+        }
+        
+        public ShotEffect DoShot(Vector target)
+        {
+            if (IsCorrectCell(target) && this[target] == MapCell.Ship)
+            {
+                return ShootIntoShip(target);
+            }
+
+            return ShootIntoEmptyCell(target);
+        }
+        
+        public IEnumerable<Vector> GetNearbyCells(Vector cell)
+        {
+            return new[] { -1, 0, 1 }
+                                   .Cartesian(new[] { -1, 0, 1 }, (x, y) => cell.Add(new Vector(x, y)))
+                                   .Where(IsCorrectCell);
+        }
+
+        public bool HasAliveShips()
+        {
+            return AllShips.Any(s => s.IsAlive);
         }
 
         private bool IsPossibleSetShip(List<Vector> shipCells)
@@ -78,19 +109,10 @@ namespace battleships.MapUtils
             return this[cell] == MapCell.Empty;
         }
 
-        public ShotEffect DoShot(Vector target)
-        {
-            if (IsCorrectCell(target) && this[target] == MapCell.Ship)
-            {
-                return ShootIntoShip(target);
-            }
-
-            return ShootIntoEmptyCell(target);
-        }
-
         private ShotEffect ShootIntoEmptyCell(Vector target)
         {
             this[target] = MapCell.Miss;
+
             return ShotEffect.Miss;
         }
 
@@ -103,21 +125,9 @@ namespace battleships.MapUtils
             return woundedShip.IsAlive ? ShotEffect.Wound : ShotEffect.Kill;
         }
 
-        public IEnumerable<Vector> GetNearbyCells(Vector cell)
-        {
-            return new[] { -1, 0, 1 }
-                                   .Cartesian(new[] { -1, 0, 1 }, (x, y) => cell.Add(new Vector(x, y)))
-                                   .Where(IsCorrectCell);
-        }
-
         private bool IsCorrectCell(Vector cell)
         {
             return cell.X >= 0 && cell.X < Width && cell.Y >= 0 && cell.Y < Height;
-        }
-
-        public bool HasAliveShips()
-        {
-            return AllShips.Any(s => s.IsAlive);
         }
     }
 }

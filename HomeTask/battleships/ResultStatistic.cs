@@ -10,6 +10,7 @@ namespace battleships
 
         public ResultStatistic(string aiName, IEnumerable<GameStatistic> gameStatistics, Settings settings)
         {
+            gameStatistics = gameStatistics as GameStatistic[] ?? gameStatistics.ToArray();
 
             var allShots = gameStatistics.Select(statistic => statistic.TurnsCount).OrderBy(shot => shot).ToList();
             var allBadShots = gameStatistics.Sum(statistic => statistic.BadShots);

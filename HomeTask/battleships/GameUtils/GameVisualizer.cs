@@ -10,24 +10,30 @@ namespace battleships.GameUtils
 {
     public class GameVisualizer
     {
-        public void VisualizeGameStep(Game game)
+        public void VisualizeCompletedGameStep(Game game)
         {
             Console.Clear();
             Console.WriteLine(MapToString(game));
             Console.WriteLine("Turn: {0}", game.TurnsCount);
             Console.WriteLine("Last target: {0}", game.LastTarget);
             if (game.BadShots > 0)
+            {
                 Console.WriteLine("Bad shots: " + game.BadShots);
+            }
             if (game.IsOver())
+            {
                 Console.WriteLine("Game is over");
+            }
 
             if (game.AiCrashed)
+            {
                 Console.WriteLine(game.LastError.Message);
+            }
 
             Console.ReadKey();
         }
 
-        public void VisualizeGameEnd(Game game)
+        public void VisualizeCompletedGame(Game game)
         {
             Console.WriteLine(
                         "Game #{3,4}: Turns {0,4}, BadShots {1}{2}",

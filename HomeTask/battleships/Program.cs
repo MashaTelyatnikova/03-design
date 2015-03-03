@@ -13,7 +13,6 @@ namespace battleships
 {
     public static class Program
     {
-
         private static void Main(string[] args)
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
@@ -29,27 +28,32 @@ namespace battleships
                 TestSingleFile(aiPath, new Settings("settings.txt"));
             }
             else
+            {
                 Console.WriteLine("No AI aiPath-file " + aiPath);
+            }
         }
 
         private static void TestSingleFile(string aiPath, Settings settings)
         {
             var logger = LogManager.GetLogger("results");
-            var tester = new AiTester();
+            var tester = new AiTester(settings);
             var monitor = new ProcessMonitor(TimeSpan.FromSeconds(settings.TimeLimitSeconds * settings.GamesCount),
                 settings.MemoryLimit);
 
             var visualizer = new GameVisualizer();
             if (settings.Interactive)
-                tester.GameStepWasMade += visualizer.VisualizeGameStep;
+            {
+                tester.CompletedGameStep += visualizer.VisualizeCompletedGameStep;
+            }
 
             if (settings.Verbose)
-                tester.GameCompleted += visualizer.VisualizeGameEnd;
-
-
+            {
+                tester.CompletedGame += visualizer.VisualizeCompletedGame;
+            }
+            
             using (var ai = new Ai(aiPath))
             {
-                ai.RunningProcess += monitor.Register;
+                ai.LaunchedProcess += monitor.Register;
 
                 var maps = new MapGenerator(settings).GenerateMaps();
                 var games = GamesGenerator.GenerateGames(maps, ai).Take(settings.GamesCount);

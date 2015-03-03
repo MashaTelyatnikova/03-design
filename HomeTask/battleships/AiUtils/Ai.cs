@@ -13,7 +13,13 @@ namespace battleships.AiUtils
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Process process;
         private readonly string exePath;
-        public event Action<Process> RunningProcess;
+        
+        public event Action<Process> LaunchedProcess;
+
+        public string Name
+        {
+            get { return Path.GetFileNameWithoutExtension(exePath); }
+        }
 
         public Ai(string exePath)
         {
@@ -22,41 +28,42 @@ namespace battleships.AiUtils
 
         public void Restart()
         {
-            this.process = null;
+            process = null;
         }
-
-        public string Name
-        {
-            get { return Path.GetFileNameWithoutExtension(exePath); }
-        }
-
+        
         public Vector Init(int width, int height, int[] shipSizes)
         {
-            if (process == null || process.HasExited) process = RunProcess();
+            if (process == null || process.HasExited)
+            {
+                process = RunProcess();
+            }
+
             SendMessage("Init {0} {1} {2}", width, height, string.Join(" ", shipSizes));
+            
             return ReceiveNextShot();
         }
 
         public Vector GetNextShot(Vector lastShotTarget, ShotEffect lastShot)
         {
             SendMessage("{0} {1} {2}", lastShot, lastShotTarget.X, lastShotTarget.Y);
+            
             return ReceiveNextShot();
         }
-
-        public void SendMessage(string messageFormat, params object[] args)
-        {
-            var message = string.Format(messageFormat, args);
-            process.StandardInput.WriteLine(message);
-            Log.Debug("SEND: " + message);
-        }
-
+        
         public void Dispose()
         {
-            if (process == null || process.HasExited) return;
+            if (process == null || process.HasExited)
+            {
+                return;
+            }
+
             Log.Debug("CLOSE");
             process.StandardInput.Close();
+
             if (!process.WaitForExit(500))
+            {
                 Log.Info("Not terminated {0}", process.ProcessName);
+            }
             try
             {
                 process.Kill();
@@ -65,7 +72,17 @@ namespace battleships.AiUtils
             {
                 //nothing to do
             }
+            
             process = null;
+        }
+
+        private void SendMessage(string messageFormat, params object[] args)
+        {
+            var message = string.Format(messageFormat, args);
+
+            process.StandardInput.WriteLine(message);
+
+            Log.Debug("SEND: " + message);
         }
 
         private Process RunProcess()
@@ -82,20 +99,26 @@ namespace battleships.AiUtils
             };
 
             var aiProcess = Process.Start(startInfo);
-            if (RunningProcess != null)
-                RunningProcess(aiProcess);
+            if (LaunchedProcess != null)
+            {
+                LaunchedProcess(aiProcess);
+            }
+
             return aiProcess;
         }
 
         private Vector ReceiveNextShot()
         {
             var output = process.StandardOutput.ReadLine();
+            
             Log.Debug("RECEIVE " + output);
+            
             if (output == null)
             {
                 var err = process.StandardError.ReadToEnd();
                 Console.WriteLine(err);
                 Log.Info(err);
+                
                 throw new Exception("No ai output");
             }
             try

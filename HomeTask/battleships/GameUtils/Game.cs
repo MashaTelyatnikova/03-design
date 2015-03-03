@@ -12,7 +12,7 @@ namespace battleships.GameUtils
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private readonly Ai ai;
 
-        public event Action<Game> GameStepWasMade;
+        public event Action<Game> CompletedGameStep;
 
         public int Index { get; private set; }
         public Vector LastTarget { get; private set; }
@@ -44,21 +44,42 @@ namespace battleships.GameUtils
             while (!IsOver())
             {
                 MakeStep();
-                if (GameStepWasMade != null)
-                    GameStepWasMade(this);
+                if (CompletedGameStep != null)
+                {
+                    CompletedGameStep(this);
+                }
             }
+        }
+
+        public GameStatistic GetStatistic()
+        {
+            return new GameStatistic(TurnsCount, BadShots, AiCrashed);
         }
 
         private void MakeStep()
         {
             if (IsOver())
+            {
                 throw new InvalidOperationException("Game is Over");
-            if (!UpdateLastTarget()) return;
-            if (IsBadShot(LastTarget)) BadShots++;
+            }
+
+            if (!UpdateLastTarget())
+            {
+                return;
+            }
+
+            if (IsBadShot(LastTarget))
+            {
+                BadShots++;
+            }
+
             var hit = Map.DoShot(LastTarget);
+
             LastShotInfo = new ShotInfo { Target = LastTarget, Hit = hit };
             if (hit == ShotEffect.Miss)
+            {
                 TurnsCount++;
+            }
         }
 
         private bool UpdateLastTarget()
@@ -88,11 +109,6 @@ namespace battleships.GameUtils
             var cellHaveWoundedDiagonalNeighbour = diagonals.Any(d => Map[target.Add(d)] == MapCell.DeadOrWoundedShip);
 
             return cellWasHitAlready || cellIsNearDestroyedShip || cellHaveWoundedDiagonalNeighbour;
-        }
-
-        public GameStatistic GetStatistic()
-        {
-            return new GameStatistic(TurnsCount, BadShots, AiCrashed);
         }
     }
 }

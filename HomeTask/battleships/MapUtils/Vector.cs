@@ -6,14 +6,14 @@ namespace battleships.MapUtils
 {
     public class Vector
     {
+        public int X { get; private set; }
+        public int Y { get; private set; }
+
         public Vector(int x, int y)
         {
             X = x;
             Y = y;
         }
-
-        public int X { get; private set; }
-        public int Y { get; private set; }
 
         public override string ToString()
         {
@@ -35,17 +35,24 @@ namespace battleships.MapUtils
             return new Vector(X - v.X, Y - v.Y);
         }
 
-        protected bool Equals(Vector other)
+        public static IEnumerable<Vector> Rect(int minX, int minY, int width, int height)
         {
-            return Y == other.Y && X == other.X;
+            return Enumerable.Range(minX, width)
+                                .Cartesian(Enumerable.Range(minY, height), (x, y) => new Vector(x, y));
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return Equals((Vector)obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            return obj.GetType() == GetType() && Equals((Vector)obj);
         }
 
         public override int GetHashCode()
@@ -56,10 +63,9 @@ namespace battleships.MapUtils
             }
         }
 
-        public static IEnumerable<Vector> Rect(int minX, int minY, int width, int height)
+        private bool Equals(Vector other)
         {
-            return Enumerable.Range(minX, width)
-                                .Cartesian(Enumerable.Range(minY, height), (x, y) => new Vector(x, y));
+            return Y == other.Y && X == other.X;
         }
     }
 }
