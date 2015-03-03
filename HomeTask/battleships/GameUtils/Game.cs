@@ -94,9 +94,12 @@ namespace battleships.GameUtils
             catch (Exception ex)
             {
                 AiCrashed = true;
+                TurnsCount = 0;
+                LastError = ex;
+
                 Log.Info("Ai {0} crashed", ai.Name);
                 Log.Error(ex);
-                LastError = ex;
+                
                 return false;
             }
         }

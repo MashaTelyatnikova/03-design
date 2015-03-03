@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using battleships.Enums;
 using MoreLinq;
@@ -21,17 +20,13 @@ namespace battleships.MapUtils
             random = new Random(settings.RandomSeed);
         }
 
-        public IEnumerable<Map> GenerateMaps()
+        public Map GenerateMap()
         {
-            while (true)
-            {
-                var map = new Map(width, height);
-                shipSizes.ForEach(size => PlaceShip(map, size));
+            var map = new Map(width, height);
+            shipSizes.ForEach(size => PlaceShip(map, size));
 
-                yield return map;
-            }
+            return map;
         }
-
         private void PlaceShip(Map map, int size)
         {
             var cells = Vector.Rect(0, 0, width, height).OrderBy(v => random.Next());

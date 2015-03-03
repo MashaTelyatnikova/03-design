@@ -15,7 +15,7 @@ namespace battleships.AiUtils
         private readonly string exePath;
         
         public event Action<Process> LaunchedProcess;
-
+ 
         public string Name
         {
             get { return Path.GetFileNameWithoutExtension(exePath); }
@@ -28,6 +28,15 @@ namespace battleships.AiUtils
 
         public void Restart()
         {
+            try
+            {
+                process.Kill();
+            }
+            catch
+            {
+                //
+            }
+
             process = null;
         }
         

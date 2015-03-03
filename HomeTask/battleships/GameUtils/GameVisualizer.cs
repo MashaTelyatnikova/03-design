@@ -1,7 +1,5 @@
 using System;
-using System.Activities.Statements;
 using System.Linq;
-using System.Text;
 using battleships.Enums;
 using battleships.MapUtils;
 using MoreLinq;

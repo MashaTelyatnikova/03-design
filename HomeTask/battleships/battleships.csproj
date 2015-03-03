@@ -52,11 +52,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AiUtils\AiRestarter.cs" />
     <Compile Include="AiUtils\Ai.cs" />
     <Compile Include="Enums\ShotInfo.cs" />
     <Compile Include="GameUtils\Game.cs" />
     <Compile Include="GameUtils\GameStatistic.cs" />
-    <Compile Include="GameUtils\GamesGenerator.cs" />
     <Compile Include="GameUtils\GameVisualizer.cs" />
     <Compile Include="MapUtils\Map.cs" />
     <Compile Include="Enums\MapCell.cs" />
