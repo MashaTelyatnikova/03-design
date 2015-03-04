@@ -19,7 +19,8 @@ namespace BattleshipsTests
                 RandomSeed = 0
             };
             var gen = new MapGenerator(settings);
-            var maps = gen.GenerateMaps().Take(10000).ToList();
+            for (var i = 0; i < 1000; ++i)
+                gen.GenerateMap();
         }
     }
 }
