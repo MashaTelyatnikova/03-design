@@ -82,7 +82,7 @@ namespace battleships.AiUtils
                 //nothing to do
             }
             
-            process = null;
+            process = RunProcess();
         }
 
         private void SendMessage(string messageFormat, params object[] args)

@@ -44,6 +44,7 @@ namespace battleships
                     settings.MemoryLimit);
                 var visualizer = new GameVisualizer();
                 var aiRestarter = new AiRestarter(ai, settings.CrashLimit);
+
                 var mapGenerator = new MapGenerator(settings);
 
                 if (settings.Interactive)
@@ -58,15 +59,14 @@ namespace battleships
                 
                 tester.AiCrashed += aiRestarter.RestartAi;
                 ai.LaunchedProcess += monitor.Register;
-
                 
                 var gameStatistics = Enumerable.Range(0, settings.GamesCount)
                                                 .Select(index => new Game(mapGenerator.GenerateMap(), ai, index))
                                                 .Select(game => tester.Test(game))
                                                 .TakeUntil(gameStatistic => aiRestarter.CrashLimitExceeded);
-                
-                var resultStatistic = new ResultStatistic(ai.Name, gameStatistics, settings);
 
+                var resultStatistic = new ResultStatistic(ai.Name, gameStatistics, settings);
+                
                 logger.Info(resultStatistic.Message);
                 Console.WriteLine(resultStatistic);
             }

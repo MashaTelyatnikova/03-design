@@ -99,7 +99,7 @@ namespace battleships.GameUtils
 
                 Log.Info("Ai {0} crashed", ai.Name);
                 Log.Error(ex);
-                
+
                 return false;
             }
         }
